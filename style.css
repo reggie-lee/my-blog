@@ -1,0 +1,139 @@
+:target::before {
+    content: "";
+    display: block;
+    height: 60px;
+    margin: -60px 0 0;
+}
+
+.navbar-shadow {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05), inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+}
+
+.grid-sidebar {
+    grid-area: sidebar;
+}
+
+.grid-main {
+    grid-area: main;
+}
+
+.grid-article {
+    grid-area: article;
+}
+
+.grid-rightside {
+    grid-area: rightside;
+}
+
+.form-login {
+    width: 100%;
+    max-width: 330px;
+    padding: 15px;
+    margin: auto;
+}
+
+.form-login .form-floating:focus-within {
+    z-index: 2;
+}
+
+.form-login .input-start {
+    margin-bottom: -1px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.form-login .input-middle {
+    margin-bottom: -1px;
+    border-radius: 0 0 0 0;
+}
+
+.form-login .input-end {
+    margin-bottom: 16px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+
+@media(min-width: 768px) {
+    .index-layout {
+        display: grid;
+        gap: 1.5rem;
+        grid-template-areas: "sidebar main";
+        grid-template-columns: 1fr 2fr;
+    }
+}
+
+@media(min-width: 992px) {
+    .index-layout {
+        display: grid;
+        gap: 1.5rem;
+        grid-template-areas: "sidebar main rightside";
+        grid-template-columns: 1fr 2fr 1fr;
+    }
+}
+
+.index-main article {
+    margin-top: 4rem;
+}
+
+.index-main article>header a:not(:hover) {
+    text-decoration: none;
+}
+
+.index-main article>header {
+    margin-bottom: 1.5rem;
+}
+
+.index-main article>div {
+    margin-bottom: 1.5rem;
+}
+
+@media(min-width: 768px) {
+    .blog-layout {
+        display: grid;
+        gap: 1.5rem;
+        grid-template-areas: "sidebar main";
+        grid-template-columns: 1fr 4fr;
+    }
+    .blog-toc {
+        position: sticky;
+        top: 6rem;
+        display: block !important;
+    }
+    .blog-toc ul {
+        padding-left: 0;
+        list-style: none;
+    }
+    .blog-toc a {
+        color: inherit;
+        text-decoration: none;
+    }
+    .blog-toc li.active a {
+        font-weight: bold;
+    }
+}
+
+.blog-content>p>img {
+    /* img-fluid rounded mx-auto d-block */
+    max-width: 100%;
+    height: auto;
+    border-radius: .25rem!important;
+    margin-right: auto!important;
+    margin-left: auto!important;
+    display: block!important;
+}
+
+/* .blog-title {
+    margin-bottom: 2.5rem;
+}
+
+.blog-content > h2:not(:first-child) {
+    margin-top: 1.75rem;
+} */
+
+/* .blog-content > p {
+    margin-bottom: 0.5rem;
+}
+
+.blog-content > ul {
+    margin-bottom: 0.5rem;
+} */

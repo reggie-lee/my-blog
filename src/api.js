@@ -1,0 +1,177 @@
+
+/** @param {Response} resp */
+async function unwrap(resp) {
+    if (resp.status == 401) {
+        window.location.href = "/login";
+    }
+    if (!resp.ok) {
+        throw resp;
+    }
+    const json = await resp.json();
+    if (typeof json.code !== "number"
+        || typeof json.msg !== "string") {
+        throw json;
+    }
+    if (json.code != 200) {
+        console.error(`${json.code}: ${json.msg}`);
+        throw [json.code, json.msg];
+    }
+    return json.data;
+}
+
+function urlWithParams(url, params) {
+    if (typeof params !== "undefined")
+        return url.toString() + "?" + new URLSearchParams(params).toString();
+    else
+        return url.toString();
+}
+
+/**
+ * @param {"GET" | "POST" | "PUT" | "DELETE"} method
+ * @param {string} url
+ * @param {Record<string, string|number|null|Array>} body
+ */
+async function api(method, url, body) {
+    let req;
+    switch (method) {
+        case "DELETE":
+        case "GET": {
+            req = fetch(`/api/${urlWithParams(url, body)}`, {
+                method: "GET",
+                credentials: "same-origin",
+                headers: {
+                    "Accept": "application/json",
+                },
+            });
+        } break;
+        default: {
+            req = fetch(`/api/${url}`, {
+                method: "POST",
+                credentials: "same-origin",
+                headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
+                },
+                body: typeof body !== "undefined"
+                    ? JSON.stringify(body)
+                    : undefined,
+            });
+        }
+    }
+    return unwrap(await req);
+}
+
+/**
+ * @param {{
+ *  username: string,
+ *  password: string,
+ * }} creds
+ */
+export function login(creds) {
+    return api("POST", "login", {
+        username: creds.username,
+        pwd: creds.password,
+    });
+}
+
+/**
+ * @param {{
+ *  username: string,
+ *  password: string,
+ *  email: string,
+ * }} creds
+ */
+export function signUp(creds) {
+    return api("POST", "join", {
+        username: creds.username,
+        password: creds.password,
+        userIdentity: "BLOGGER",
+        age: 0,
+        gender: "unknown",
+        email: creds.email,
+    });
+}
+
+export function getUser(username) {
+    return api("GET", `users/${encodeURIComponent(username)}`);
+}
+
+/**
+ * @param {{
+ *  userId: number,
+ *  username: string,
+ *  age: number,
+ *  gender: string,
+ *  email: string,
+ * }} user
+ */
+export function updateUser(user) {
+    return api("PUT", "users/user", user);
+}
+
+export function getBlogs(page, size) {
+    return api("GET", "blogs/square", {
+        page,
+        size,
+    });
+}
+
+/**
+ * @param {{
+ *  userId: number,
+ *  title: string,
+ *  content: string,
+ *  blogStatus: "PUBLIC" | "PRIVATE",
+ * }} blog 
+ */
+export function postBlog(blog) {
+    return api("POST", "blogs/blog", blog);
+}
+
+/**
+ * @param {{
+ *  bid: number,
+ *  title: string,
+ *  content: string,
+ *  blogStatus: "PUBLIC" | "PRIVATE",
+ * }} blog 
+ */
+export function updateBlog(blog) {
+    return api("PUT", "blogs/blog", blog);
+}
+
+export function deleteBlog(bid) {
+    return api("DELETE", "blogs/blog", { bid });
+}
+
+export function getBlogByBid(bid) {
+    return api("GET", "blogs/get/by-id", { bid });
+}
+
+export function getBlogByTitle(title) {
+    return api("GET", `blogs/${encodeURIComponent(title)}`);
+}
+
+export function getCommentsByBid(bid) {
+    return api("GET", `comments/${encodeURIComponent(bid)}`);
+}
+
+/**
+ * @param {{
+ *  blogId: number,
+ *  username: string,
+ *  content: string,
+ *  parentCommentId: number,
+ * }} comment
+ */
+export function postComment(comment) {
+    return api("POST", "comments/comment", comment);
+}
+
+export function likeBlog(bid, uid) {
+    return api("POST", "likes/like", { bid, uid });
+}
+
+export function unlikeBlog(bid, uid) {
+    return api("DELETE", "likes/like", { bid, uid });
+}
